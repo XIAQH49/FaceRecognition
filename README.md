@@ -17,17 +17,19 @@ This project aims to build a face gender and age recognition system based on the
 Ensure that the system remains stable during long-term operation without crashing or abnormal exit. For abnormal input (such as non-face images, damaged image files, etc.), the system can give clear error prompts to avoid program crashes.
 
 ## Project Structure
-.gitignore
-AgeGender.py
-README.md
-main_window.py
-main_window.ui
-text.py
-models/
-  age_deploy.prototxt
-  age_net.caffemodel
-  gender_deploy.prototxt
-  gender_net.caffemodel
-  opencv_face_detector.pbtxt
-  opencv_face_detector_uint8.pb
+>.gitignore  
+>AgeGender.py  
+>README.md  
+>main_window.py  
+>main_window.ui  
+>text.py  
+>models/  
+>+ age_deploy.prototxt  
+>+ age_net.caffemodel  
+>+ gender_deploy.prototxt  
+>+ gender_net.caffemodel  
+>+ opencv_face_detector.pbtxt  
+>+ opencv_face_detector_uint8.pb
+
+
   
