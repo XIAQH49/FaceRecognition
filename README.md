@@ -1,22 +1,22 @@
-# FaceRecognition
-Gender and age recognition through facial features.
+# 人脸性别年龄识别
+通过面部特征识别性别和年龄。
 
-## Project Overview
-This project aims to build a face gender and age recognition system based on the Qt framework. The system will combine computer vision and machine learning technologies to achieve efficient processing and analysis of facial images and accurately identify the gender and age information of the person in the image. Users can interact with the system through a simple and intuitive graphical user interface (GUI), select local pictures or open the camera to capture pictures in real time, and the system will quickly give and display the recognition results.
+## 项目概况
+本项目旨在构建一个基于 Qt 框架的人脸性别和年龄识别系统。该系统将结合计算机视觉和机器学习技术，实现对面部图像的高效处理和分析，并准确识别图像中人物的性别和年龄信息。用户可以通过简单直观的图形用户界面 （GUI） 与系统交互，选择本地图片或打开相机实时拍摄图片，系统将快速给出并显示识别结果。
 
-## Project Goals
-### Functionality
-1. **Image selection and display:** Support users to select facial image files from local, and the selected images will be clearly displayed in the system interface, and support multiple common image formats, such as PNG, JPEG, etc.
-2. **Real-time camera recognition:** Users can turn on the camera, and the system will process the images captured by the camera in real time, identify the gender and age of the faces in them, and display the recognition results in real time.
-3. **Recognition result presentation:** For each face image or face in the real-time picture, the system will accurately identify its gender (male or female) and approximate age range, and present the results in an intuitive way on the interface, such as text annotation on the face image.
-4. **User-friendly interaction:** The simple and easy-to-use Qt interface is designed so that users can operate easily, even non-professionals can quickly get started. At the same time, necessary prompt information is provided during the operation to enhance the user experience.
-### Performance indicators
-1. **Recognition accuracy:** On common face image datasets, the gender recognition accuracy is over 90%, and the age recognition error is controlled within ±5 years.
-2. **Processing speed:** For a single face image, the recognition time is controlled within 1 second; for real-time camera images, maintain a smooth recognition frame rate of no less than 10 frames/second.
-### System stability
-Ensure that the system remains stable during long-term operation without crashing or abnormal exit. For abnormal input (such as non-face images, damaged image files, etc.), the system can give clear error prompts to avoid program crashes.
+## 项目目标
+### 功能性
+1. **图片选择与显示：** 支持用户从本地选择人脸图片文件，所选图片将在系统界面中清晰显示，并支持多种常用图片格式，如 PNG、JPEG 等。
+2. **实时摄像头识别：** 用户可以打开摄像头，系统会对摄像头拍摄的图像进行实时处理，识别其中人脸的性别和年龄，并实时显示识别结果。
+3. **识别结果呈现：** 对于每张人脸图像或实时图片中的人脸，系统会准确识别其性别（男性或女性）和大致年龄范围，并将结果以直观的方式呈现在界面上，例如在人脸图像上进行文字标注。
+4. **用户友好的交互：** 简单易用的 Qt 界面设计，让用户轻松作，即使是非专业人士也能快速上手。同时，在作过程中提供必要的提示信息，以提升用户体验。
+### 性能指标
+1. **识别准确率：** 在常见的人脸图像数据集上，性别识别准确率超过 90%，年龄识别误差控制在 ±5 年以内。
+2. **处理速度：** 对于单人脸图像，识别时间控制在 1 秒以内;对于实时相机图像，请保持不低于 10 帧/秒的平滑识别帧速率。
+### 系统稳定性
+确保系统在长期运行过程中保持稳定，没有崩溃或异常退出。对于异常的输入（如无人脸图片、损坏的图片文件等），系统可以给出明确的错误提示，避免程序崩溃。
 
-## Project Structure
+## 项目结构
 >.gitignore  
 >AgeGender.py  
 >README.md  
@@ -30,6 +30,3 @@ Ensure that the system remains stable during long-term operation without crashin
 >+ gender_net.caffemodel  
 >+ opencv_face_detector.pbtxt  
 >+ opencv_face_detector_uint8.pb
-
-
-  
