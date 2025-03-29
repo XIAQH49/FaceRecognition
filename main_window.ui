@@ -14,7 +14,7 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="StartButton">
+   <widget class="QPushButton" name="OpenCameraButton">
     <property name="geometry">
      <rect>
       <x>60</x>
@@ -24,10 +24,10 @@
      </rect>
     </property>
     <property name="text">
-     <string>开  始  识  别</string>
+     <string>打 开 摄 像 机</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="StopButton">
+   <widget class="QPushButton" name="CloseCameraButton">
     <property name="geometry">
      <rect>
       <x>60</x>
@@ -37,7 +37,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>结  束  识  别</string>
+     <string>关 闭 摄 像 机</string>
     </property>
    </widget>
    <widget class="QPushButton" name="SelectButton">
@@ -77,6 +77,19 @@
     </property>
     <property name="text">
      <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="RecognizeButton">
+    <property name="geometry">
+     <rect>
+      <x>1130</x>
+      <y>140</y>
+      <width>80</width>
+      <height>120</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>识  别</string>
     </property>
    </widget>
   </widget>

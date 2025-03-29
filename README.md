@@ -17,16 +17,16 @@
 确保系统在长期运行过程中保持稳定，没有崩溃或异常退出。对于异常的输入（如无人脸图片、损坏的图片文件等），系统可以给出明确的错误提示，避免程序崩溃。
 
 ## 项目结构
->.gitignore  
->AgeGender.py  
->README.md  
->main_window.py  
->main_window.ui  
->text.py  
->models/  
->+ age_deploy.prototxt  
->+ age_net.caffemodel  
->+ gender_deploy.prototxt  
->+ gender_net.caffemodel  
->+ opencv_face_detector.pbtxt  
->+ opencv_face_detector_uint8.pb
+.gitignore
+AgeGender.py
+README.md
+main_window.py
+main_window.ui
+text.py
+models/
+├── age_deploy.prototxt
+├── age_net.caffemodel
+├── gender_deploy.prototxt
+├── gender_net.caffemodel
+├── opencv_face_detector.pbtxt
+└── opencv_face_detector_uint8.pb
