@@ -17,12 +17,12 @@
 确保系统在长期运行过程中保持稳定，没有崩溃或异常退出。对于异常的输入（如无人脸图片、损坏的图片文件等），系统可以给出明确的错误提示，避免程序崩溃。
 
 ## 项目结构
-.gitignore
-AgeGender.py
+.gitignore 
 README.md
-main_window.py
+AgeGender.py                #原功能实现文件，保持不变，提供年龄性别检测等核心功能。
+interface_interaction.py    #创建 MainWindow 实例，将界面操作与 AgeGender.py 中的功能关联起来，实现界面与功能的交互。
+main_window.py              #负责加载使用 Qt Designer 设计的 UI 文件，并定义 MainWindow 类。
 main_window.ui
-text.py
 models/
 ├── age_deploy.prototxt
 ├── age_net.caffemodel
