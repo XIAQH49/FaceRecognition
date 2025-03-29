@@ -1,80 +1,115 @@
+# interface_interaction.py
 from main_window import MainWindow
 from AgeGender import AgeGenderDetector
-from PyQt5.QtGui import QStandardItem
+from PyQt5.QtGui import QImage, QPixmap
+from PyQt5.QtCore import Qt, QTimer
 import cv2
 import sys
 from PyQt5 import QtWidgets
-
+import os
+import numpy as np  # 修复：添加 numpy 导入
 
 class InterfaceInteraction:
     def __init__(self):
-        # 创建主窗口实例
         self.main_window = MainWindow()
-        # 创建年龄性别检测器实例
         self.detector = AgeGenderDetector()
-
-        # 连接按钮点击信号到对应的处理方法
+        
+        # 连接信号
+        self.main_window.OpenCameraButton.clicked.connect(self.start_camera_and_detect)
+        self.main_window.CloseCameraButton.clicked.connect(self.stop_camera)
         self.main_window.SelectButton.clicked.connect(self.select_file_and_detect)
-        self.main_window.StartButton.clicked.connect(self.start_camera_and_detect)
-        self.main_window.StopButton.clicked.connect(self.stop_camera)
+        self.main_window.RecognizeButton.clicked.connect(self.real_time_recognize)
+
+        # 初始化定时器
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.update_camera_frame)
 
     def select_file_and_detect(self):
-        # 调用主窗口的选择文件方法
         self.main_window.select_file()
-        file_path = self.main_window.selected_file_path
-        if file_path:
+        if self.main_window.selected_file_path:
             try:
-                # 读取图片
-                image = cv2.imread(file_path)
-                # 调用年龄性别检测器的检测方法
-                processed_frame, gender, age = self.detector.detect(image)
-                # 在主窗口显示处理后的图片
-                self.main_window.display_image(file_path)
-                # 更新表格数据
-                self.update_table(file_path, gender, age)
+                image = cv2.imread(self.main_window.selected_file_path)
+                # 调用检测方法，获取多人脸结果
+                processed_frame, face_results = self.detector.detect(image)
+            
+                # 显示处理后的图像（可选，如果需要标注框）
+                self.main_window.display_image(processed_frame)
+            
+                # 清空旧数据
+                self.main_window.model.removeRows(0, self.main_window.model.rowCount())
+            
+                # 添加多行数据到表格
+                for tag, gender, age in face_results:
+                    self.main_window.add_data_to_table(
+                        self.main_window.selected_file_path,
+                        tag,  # 标签（如 "人脸1"）
+                        gender,
+                        age
+                    )
             except Exception as e:
-                print(f"处理图片时出错: {e}")
+                self.main_window._show_error_message(f"识别失败: {str(e)}", "错误")
 
     def start_camera_and_detect(self):
-        if self.main_window.cap is None:
+        if not self.main_window.cap:
             self.main_window.cap = cv2.VideoCapture(0)
-            while True:
-                ret, frame = self.main_window.cap.read()
-                if ret:
-                    # 调用年龄性别检测器的检测方法
-                    processed_frame, gender, age = self.detector.detect(frame)
-                    # 将OpenCV图像转换为Qt图像
-                    height, width, channel = processed_frame.shape
-                    bytesPerLine = 3 * width
-                    qImg = self.main_window.QImage(processed_frame.data, width, height, bytesPerLine,
-                                                   self.main_window.QImage.Format_RGB888).rgbSwapped()
-                    pixmap = self.main_window.QPixmap.fromImage(qImg)
-                    pixmap = pixmap.scaled(self.main_window.image_display_label.size(),
-                                           aspectRatioMode=self.main_window.Qt.KeepAspectRatioByExpanding,
-                                           transformMode=self.main_window.Qt.SmoothTransformation)
-                    # 在主窗口的QLabel中显示图像
-                    self.main_window.image_display_label.setPixmap(pixmap)
-                    # 处理Qt事件
-                    self.main_window.QtWidgets.QApplication.processEvents()
-                    # 更新表格数据
-                    self.update_table("摄像头", gender, age)
-                if cv2.waitKey(1) & 0xFF == ord('q') or self.main_window.cap is None:
-                    break
-            cv2.destroyAllWindows()
+            if self.main_window.cap.isOpened():
+                self.timer.start(30)
+                self.main_window.RecognizeButton.show()
+            else:
+                self.main_window._show_error_message("无法打开摄像头", "硬件错误")
+
+    def update_camera_frame(self):
+        if self.main_window.cap and self.main_window.cap.isOpened():
+            ret, frame = self.main_window.cap.read()
+            if ret:
+                rgb_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                h, w, ch = rgb_image.shape
+                bytes_per_line = ch * w
+                qt_image = QImage(
+                    rgb_image.data, w, h, bytes_per_line, 
+                    QImage.Format_RGB888
+                )
+                self.main_window.image_display_label.setPixmap(
+                    QPixmap.fromImage(qt_image).scaled(
+                        self.main_window.image_display_label.size(),
+                        Qt.KeepAspectRatioByExpanding,
+                        Qt.SmoothTransformation
+                    )
+                )
+
+    def real_time_recognize(self):
+        if self.main_window.cap and self.timer.isActive():
+            pixmap = self.main_window.image_display_label.pixmap()
+            if pixmap:
+                qimage = pixmap.toImage()
+                width, height = qimage.width(), qimage.height()
+                ptr = qimage.bits()
+                ptr.setsize(qimage.byteCount())
+                frame = np.array(ptr).reshape(height, width, 4)
+                frame = cv2.cvtColor(frame, cv2.COLOR_RGBA2BGR)
+            
+                # 调用检测方法，获取多人脸结果
+                processed_frame, face_results = self.detector.detect(frame)
+            
+                # 清空旧数据
+                self.main_window.model.removeRows(0, self.main_window.model.rowCount())
+            
+                # 添加多行数据到表格
+                for tag, gender, age in face_results:
+                    self.main_window.add_data_to_table(
+                        "摄像头",  # 位置
+                        tag,       # 标签（如 "人脸1"）
+                        gender,
+                        age
+                    )
 
     def stop_camera(self):
-        # 调用主窗口的停止摄像头方法
-        self.main_window.stop_camera()
-
-    def update_table(self, location, gender, age):
-        # 创建一行数据
-        row = []
-        for item in [location, gender, age]:
-            cell = QStandardItem(item)
-            row.append(cell)
-        # 将数据行添加到表格模型中
-        self.main_window.model.appendRow(row)
-
+        if self.main_window.cap:
+            self.timer.stop()
+            self.main_window.cap.release()
+            self.main_window.cap = None
+            self.main_window.image_display_label.clear()
+            self.main_window.RecognizeButton.hide()
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)

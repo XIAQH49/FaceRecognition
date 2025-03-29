@@ -15,7 +15,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # 初始化QTableView，假设objectName为OutputView
         self.table_view = self.OutputView
         self.model = QStandardItemModel()
-        self.model.setHorizontalHeaderLabels(["位置", "性别", "年龄"])  # 设置表头
+        self.model.setHorizontalHeaderLabels(["位置", "标签","性别", "年龄"])  # 设置表头
         self.table_view.setModel(self.model)
 
         # 设置列宽
@@ -42,9 +42,10 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     def _set_table_column_widths(self):
         """设置表格列宽"""
-        self.table_view.setColumnWidth(0, 439)
-        self.table_view.setColumnWidth(1, 170)
-        self.table_view.setColumnWidth(2, 170)
+        self.table_view.setColumnWidth(0, 440)
+        self.table_view.setColumnWidth(1, 58)
+        self.table_view.setColumnWidth(2, 150)
+        self.table_view.setColumnWidth(3, 150)
 
     def _connect_button_signals(self):
         """连接按钮的clicked信号到相应的槽函数"""
@@ -75,7 +76,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
                 # 显示选择的图片
                 self.display_image(file_path)
                 # 模拟识别结果，添加数据到表格
-                self.add_data_to_table(file_path, "男", "25")
+                self.add_data_to_table(file_path,"未标记","男", "25")
                 # 释放不必要的内存
                 self._release_unused_memory()
 
@@ -188,11 +189,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         except Exception as e:
             self._show_error_message(f"显示图像时出错: {e}", "图像显示错误")
 
-    def add_data_to_table(self, location, gender, age):
-        row = []
-        for item in [location, gender, age]:
-            cell = QStandardItem(item)
-            row.append(cell)
+    def add_data_to_table(self, location, tag, gender, age):
+        """添加一行四列数据"""
+        row = [
+            QStandardItem(location),
+            QStandardItem(tag),
+            QStandardItem(gender),
+            QStandardItem(age)
+        ]
         self.model.appendRow(row)
 
     def _release_unused_memory(self):

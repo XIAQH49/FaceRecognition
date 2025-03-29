@@ -1,6 +1,7 @@
 # AgeGender.py
 import cv2
 import numpy as np
+import os
 
 class AgeGenderDetector:
     def __init__(self, device="cpu"):
@@ -12,6 +13,7 @@ class AgeGenderDetector:
         self.age_list = ['(0-2)', '(4-6)', '(8-12)', '(15-20)', '(25-32)', '(38-43)', '(48-53)', '(60-100)']
         self.gender_list = ['Male', 'Female']
         self._set_backend()
+
 
     def _set_backend(self):
         # 配置计算后端
@@ -28,21 +30,20 @@ class AgeGenderDetector:
             net.setPreferableTarget(target)
 
     def detect(self, frame):
-        # 人脸检测
         processed_frame, bboxes = self._get_face_boxes(frame)
-        gender, age = "Unknown", "Unknown"
+        results = []  # 存储多个人脸的结果
         
         if bboxes:
-            # 提取第一个人脸（示例仅处理单张人脸）
-            bbox = bboxes[0]
-            face = self._extract_face_roi(frame, bbox)
-            
-            # 性别预测
-            gender = self._predict_gender(face)
-            # 年龄预测
-            age = self._predict_age(face)
+            # 遍历所有检测到的人脸
+            for idx, bbox in enumerate(bboxes):
+                face = self._extract_face_roi(frame, bbox)
+                gender = self._predict_gender(face)
+                age = self._predict_age(face)
+                # 生成标签（例如 "人脸1"）
+                tag = f"人脸{idx+1}"
+                results.append((tag, gender, age))
         
-        return processed_frame, gender, age
+        return processed_frame, results  # 返回处理后的图像和结果列表
 
     def _get_face_boxes(self, frame, conf_threshold=0.7):
         # 人脸检测逻辑
