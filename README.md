@@ -19,9 +19,9 @@
 ## 项目结构
 .gitignore 
 README.md
-AgeGender.py                #原功能实现文件，保持不变，提供年龄性别检测等核心功能。
-interface_interaction.py    #创建 MainWindow 实例，将界面操作与 AgeGender.py 中的功能关联起来，实现界面与功能的交互。
-main_window.py              #负责加载使用 Qt Designer 设计的 UI 文件，并定义 MainWindow 类。
+AgeGender.py                <span style="color: #777">// 原功能实现文件，保持不变，提供年龄性别检测等核心功能</span>
+interface_interaction.py    <span style="color: #777">// 创建 MainWindow 实例，将界面操作与 AgeGender.py 中的功能关联</span>
+main_window.py              <span style="color: #777">// 负责加载使用 Qt Designer 设计的 UI 文件，并定义 MainWindow 类</span>
 main_window.ui
 models/
 ├── age_deploy.prototxt
