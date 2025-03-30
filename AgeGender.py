@@ -2,6 +2,7 @@
 import cv2
 import numpy as np
 import os
+from PIL import Image, ImageDraw, ImageFont
 
 class AgeGenderDetector:
     def __init__(self, device="cpu"):
@@ -63,8 +64,23 @@ class AgeGenderDetector:
                 bboxes.append([x1, y1, x2, y2])
                 # 绘制检测框
                 cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 2)
+                # 添加标签
+                tag = f"人脸{len(bboxes)}"
+                # 计算字体高度
+                font = ImageFont.truetype("simkai.ttf", 30)
+                _, _, _, h = font.getbbox(tag)
+                # 调整文本位置，使字体下对齐框
+                pos = (x1, y1-30)
+                # 使用 PIL 绘制中文标签
+                frame = self._draw_text(frame, tag,  pos, font)
         
         return frame, bboxes
+    
+    def _draw_text(self, img, text, pos ,font):
+        img_pil = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+        draw = ImageDraw.Draw(img_pil)
+        draw.text(pos, text, font=font, fill=(0, 255, 0))
+        return cv2.cvtColor(np.array(img_pil), cv2.COLOR_RGB2BGR)
 
     def _extract_face_roi(self, frame, bbox, padding=20):
         # 提取人脸区域

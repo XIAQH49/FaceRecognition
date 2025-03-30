@@ -25,7 +25,7 @@ class InterfaceInteraction:
         self.timer.timeout.connect(self.update_camera_frame)
 
     def select_file_and_detect(self):
-        self.main_window.select_file()
+        #self.main_window.select_file()
         if self.main_window.selected_file_path:
             try:
                 image = cv2.imread(self.main_window.selected_file_path)
@@ -62,6 +62,10 @@ class InterfaceInteraction:
         if self.main_window.cap and self.main_window.cap.isOpened():
             ret, frame = self.main_window.cap.read()
             if ret:
+                # 调用检测方法，获取处理后的帧和结果
+                processed_frame, face_results = self.detector.detect(frame)
+
+                # 将处理后的帧转换为RGB格式
                 rgb_image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                 h, w, ch = rgb_image.shape
                 bytes_per_line = ch * w
@@ -102,6 +106,8 @@ class InterfaceInteraction:
                         gender,
                         age
                     )
+                # 显示处理后的图像
+                self.main_window.display_image(processed_frame)
 
     def stop_camera(self):
         if self.main_window.cap:

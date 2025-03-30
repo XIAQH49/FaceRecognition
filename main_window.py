@@ -124,7 +124,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def recognize(self):
         if self.cap is not None:
             # 模拟识别结果，添加数据到表格
-            self.add_data_to_table("实时摄像机", "男", "25")
+            self.add_data_to_table("实时摄像机", "未标记", "男", "25")            
             # 释放不必要的内存
             self._release_unused_memory()
 
@@ -145,13 +145,20 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
             except Exception as e:
                 print(f"停止摄像头时出错: {e}")
 
-    def display_image(self, file_path):
+    def display_image(self, file_path_or_image):
         try:
             # 读取图片
-            image = cv2.imread(file_path)
+            if isinstance(file_path_or_image, str):
+                # 如果传入的是文件路径，读取图片
+                image = cv2.imread(file_path_or_image)
+            else:
+                # 如果传入的是图像数组，直接使用
+                image = file_path_or_image
+
             if image is None:
-                self._show_error_message(f"无法读取图片文件: {file_path}", "图片读取错误")
+                self._show_error_message(f"无法读取图片文件: {file_path_or_image}", "图片读取错误")
                 return
+            
             # 获取图片的原始高度和宽度
             height, width = image.shape[:2]
             label_width = self.image_display_label.width()
